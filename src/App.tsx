@@ -14,7 +14,7 @@ function App() {
       style={{
         fontFamily: "system-ui, sans-serif",
         padding: isMobile ? "1rem" : "2rem",
-        maxWidth: "600px",
+        maxWidth: "100%",
         margin: "0 auto",
         textAlign: "center",
         minHeight: "100vh",
