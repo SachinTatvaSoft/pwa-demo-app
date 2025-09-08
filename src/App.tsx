@@ -1,17 +1,17 @@
 import "./App.css";
 import { usePWAInstall } from "./hooks/usePWAInstall";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const { isInstallable, promptInstall } = usePWAInstall();
   const [showModal, setShowModal] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  console.log("isInstallable:", isInstallable);
+  const [currentLang, setCurrentLang] = useState("en");
 
   const userAgent = navigator.userAgent;
   const isAndroid = /Android/i.test(userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const showInstallModal = isInstallable || isIOS;
 
   let instruction = "";
   if (isAndroid) {
@@ -25,18 +25,35 @@ function App() {
       "To install this app, look for an 'Install' or 'Add to Home Screen' option in your browser menu.";
   }
 
+  useEffect(() => {
+    const storedLang = localStorage.getItem("appLanguage") || "en";
+    setCurrentLang(storedLang);
+    translatePage(storedLang);
+  }, []);
+
   const translatePage = (lang: string) => {
     const select = document.querySelector(
       ".goog-te-combo"
     ) as HTMLSelectElement | null;
 
-    if (select) {
-      setLoading(true);
+    if (!select) return;
+
+    if (lang === currentLang) return;
+
+    setLoading(true);
+
+    select.value = "en";
+    select.dispatchEvent(new Event("change"));
+
+    setTimeout(() => {
       select.value = lang;
       select.dispatchEvent(new Event("change"));
 
-      setTimeout(() => setLoading(false), 500);
-    }
+      setCurrentLang(lang);
+      localStorage.setItem("appLanguage", lang);
+
+      setTimeout(() => setLoading(false), 800);
+    }, 300);
   };
 
   return (
@@ -70,7 +87,10 @@ function App() {
             marginRight: "10px",
             padding: "8px 12px",
             cursor: "pointer",
-            color: "#16a34a",
+            color: currentLang === "hi" ? "#fff" : "#16a34a",
+            background: currentLang === "hi" ? "#16a34a" : "transparent",
+            border: "1px solid #16a34a",
+            borderRadius: "5px",
           }}
         >
           हिन्दी
@@ -80,7 +100,10 @@ function App() {
           style={{
             padding: "8px 12px",
             cursor: "pointer",
-            color: "#16a34a",
+            color: currentLang === "en" ? "#fff" : "#16a34a",
+            background: currentLang === "en" ? "#16a34a" : "transparent",
+            border: "1px solid #16a34a",
+            borderRadius: "5px",
           }}
         >
           English
@@ -106,7 +129,7 @@ function App() {
         </div>
       )}
 
-      {showModal && isInstallable && (
+      {showModal && showInstallModal && (
         <div
           style={{
             position: "fixed",
@@ -139,27 +162,26 @@ function App() {
             <p style={{ marginBottom: "1.2rem", color: "#333" }}>
               {instruction}
             </p>
-            <button
-              style={{
-                padding: "10px 20px",
-                fontSize: "1rem",
-                cursor: "pointer",
-                borderRadius: "8px",
-                border: "none",
-                background: "#16a34a",
-                color: "#fff",
-                width: "100%",
-              }}
-              onClick={() => {
-                if (isInstallable) {
+            {isInstallable && (
+              <button
+                style={{
+                  padding: "10px 20px",
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "#16a34a",
+                  color: "#fff",
+                  width: "100%",
+                }}
+                onClick={() => {
                   promptInstall();
-                }
-                setShowModal(false);
-              }}
-              disabled={!isInstallable}
-            >
-              Install App
-            </button>
+                  setShowModal(false);
+                }}
+              >
+                Install App
+              </button>
+            )}
           </div>
         </div>
       )}
