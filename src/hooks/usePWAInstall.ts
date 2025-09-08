@@ -6,7 +6,6 @@ export function usePWAInstall() {
 
   useEffect(() => {
     const handler = (e: any) => {
-      // Prevent default browser mini-infobar
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);

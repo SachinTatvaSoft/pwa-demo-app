@@ -1,0 +1,24 @@
+{
+  "name": "PWA App",
+  "short_name": "PushApp",
+  "description": "A PWA demo app",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "gcm_sender_id": "103953800507",
+  "gcm_user_visible_only": true
+}

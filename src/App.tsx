@@ -23,27 +23,12 @@ function App() {
   }
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        padding: "2rem",
-        maxWidth: "100%",
-        width: "100%",
-        margin: "0 auto",
-        textAlign: "center",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        gap: "1rem",
-        backgroundColor: "#ffffff",
-        color: "#000000",
-      }}
-    >
+    <div style={{ minHeight: "100vh" }}>
       <h1
         style={{
           fontSize: "1.8rem",
           marginBottom: "0.5rem",
+          color: "#16a34a",
         }}
       >
         PWA Demo App
@@ -101,7 +86,7 @@ function App() {
               }}
               disabled={!isInstallable}
             >
-              Install App
+              {!isInstallable ? "Disabled" : "Install App"}
             </button>
           </div>
         </div>
