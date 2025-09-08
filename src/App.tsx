@@ -61,7 +61,7 @@ function App() {
               position: "relative",
             }}
           >
-            <h2 style={{ marginTop: 0, fontSize: "1.3rem" }}>
+            <h2 style={{ marginTop: 0, fontSize: "1.3rem", color: "#333" }}>
               Install This App
             </h2>
             <p style={{ marginBottom: "1.2rem", color: "#333" }}>
