@@ -5,6 +5,9 @@ import { useState } from "react";
 function App() {
   const { isInstallable, promptInstall } = usePWAInstall();
   const [showModal, setShowModal] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  console.log("isInstallable:", isInstallable);
 
   const userAgent = navigator.userAgent;
   const isAndroid = /Android/i.test(userAgent);
@@ -22,6 +25,20 @@ function App() {
       "To install this app, look for an 'Install' or 'Add to Home Screen' option in your browser menu.";
   }
 
+  const translatePage = (lang: string) => {
+    const select = document.querySelector(
+      ".goog-te-combo"
+    ) as HTMLSelectElement | null;
+
+    if (select) {
+      setLoading(true);
+      select.value = lang;
+      select.dispatchEvent(new Event("change"));
+
+      setTimeout(() => setLoading(false), 500);
+    }
+  };
+
   return (
     <div style={{ minHeight: "100vh" }}>
       <h1
@@ -34,7 +51,62 @@ function App() {
         PWA Demo App
       </h1>
 
-      {showModal && (
+      <div
+        style={{
+          padding: "20px",
+          fontFamily: "Arial, sans-serif",
+          color: "#16a34a",
+        }}
+      >
+        <h1>Hello, welcome to my React app!</h1>
+        <p>
+          This is an example application where you can switch between English
+          and Hindi using Google Translate.
+        </p>
+
+        <button
+          onClick={() => translatePage("hi")}
+          style={{
+            marginRight: "10px",
+            padding: "8px 12px",
+            cursor: "pointer",
+            color: "#16a34a",
+          }}
+        >
+          हिन्दी
+        </button>
+        <button
+          onClick={() => translatePage("en")}
+          style={{
+            padding: "8px 12px",
+            cursor: "pointer",
+            color: "#16a34a",
+          }}
+        >
+          English
+        </button>
+      </div>
+
+      {loading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.7)",
+            zIndex: 9999,
+          }}
+        >
+          <div className="spinner" />
+        </div>
+      )}
+
+      {showModal && isInstallable && (
         <div
           style={{
             position: "fixed",
@@ -86,11 +158,28 @@ function App() {
               }}
               disabled={!isInstallable}
             >
-              {!isInstallable ? "Disabled" : "Install App"}
+              Install App
             </button>
           </div>
         </div>
       )}
+
+      <style>
+        {`
+          .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 }

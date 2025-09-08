@@ -40,3 +40,16 @@
 .read-the-docs {
   color: #888;
 }
+
+.skiptranslate iframe,
+iframe.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}

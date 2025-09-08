@@ -4,7 +4,20 @@ export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
+  const checkInstalled = () => {
+    const isStandalone = window.matchMedia(
+      "(display-mode: standalone)"
+    ).matches;
+    const isIOS = (window.navigator as any).standalone === true;
+    return isStandalone || isIOS;
+  };
+
   useEffect(() => {
+    if (checkInstalled()) {
+      setIsInstallable(false);
+      return;
+    }
+
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
