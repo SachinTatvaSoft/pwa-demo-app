@@ -10,8 +10,12 @@ function App() {
 
   const userAgent = navigator.userAgent;
   const isAndroid = /Android/i.test(userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const showInstallModal = isInstallable || isIOS;
+  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+  const isInStandaloneMode =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as any).standalone === true;
+
+  const showInstallModal = !isInStandaloneMode && (isInstallable || isIOS);
 
   let instruction = "";
   if (isAndroid) {
