@@ -79,19 +79,31 @@ function App() {
     ? "On iOS, open the Share menu and tap “Add to Home Screen”."
     : "Look for “Install app” or “Add to Home screen” in your browser menu.";
 
-  const openInstalledApp = () => {
-    const appUrl = "https://pwa-demo-app.onrender.com/?source=pwa";
+  const openInstalledApp = async () => {
+    const appUrl = "http://localhost:5173/?source=pwa";
+
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      window.location.href = appUrl;
+      return;
+    }
 
     if (/Android/i.test(navigator.userAgent)) {
-      window.location.href = `intent://pwa-demo-app.onrender.com/?source=pwa#Intent;scheme=https;package=com.android.chrome;end`;
-    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      window.location.href = appUrl;
-    } else {
-      window.location.href = "web+pwademo://open";
-      setTimeout(() => {
-        window.location.href = appUrl;
-      }, 1500);
+      if ("getInstalledRelatedApps" in navigator) {
+        const relatedApps = await (navigator as any).getInstalledRelatedApps();
+        if (relatedApps.length > 0) {
+          window.location.href = appUrl;
+          return;
+        }
+      }
+      window.location.href =
+        "intent://pwa-demo-app.onrender.com/?source=pwa#Intent;scheme=https;end";
+      return;
     }
+
+    window.location.href = "web+pwademo://open";
+    setTimeout(() => {
+      window.location.href = appUrl;
+    }, 1500);
   };
 
   return (
