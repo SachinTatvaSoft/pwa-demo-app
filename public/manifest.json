@@ -2,12 +2,14 @@
   "name": "PWA App",
   "short_name": "PushApp",
   "description": "A PWA demo app",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "capture_links": "existing-client-navigate",
+  "launch_handler": { "client_mode": "navigate-existing" },
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "portrait-primary",
-  "scope": "/",
   "icons": [
     {
       "src": "/vite.svg",

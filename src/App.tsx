@@ -3,31 +3,20 @@ import { usePWAInstall } from "./hooks/usePWAInstall";
 import { useState, useEffect } from "react";
 
 function App() {
-  const { isInstallable, promptInstall } = usePWAInstall();
+  const { isInstallable, isInstalled, promptInstall } = usePWAInstall();
   const [showModal, setShowModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [currentLang, setCurrentLang] = useState("en");
 
-  const userAgent = navigator.userAgent;
-  const isAndroid = /Android/i.test(userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
-  const isInStandaloneMode =
+  const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
     (window.navigator as any).standalone === true;
 
-  const showInstallModal = !isInStandaloneMode && (isInstallable || isIOS);
+  const userAgent = navigator.userAgent;
+  const isAndroid = /Android/i.test(userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-  let instruction = "";
-  if (isAndroid) {
-    instruction =
-      "On Android, you might see a dedicated 'Install' button within the PWA or find the option in the browser's menu or follow add to home screen option menu.";
-  } else if (isIOS) {
-    instruction =
-      "On iOS (iPhones and iPads), you'll typically find the 'Add to Home Screen' option within the share menu.";
-  } else {
-    instruction =
-      "To install this app, look for an 'Install' or 'Add to Home Screen' option in your browser menu.";
-  }
+  const shouldShowModal = !isStandalone && showModal;
 
   useEffect(() => {
     const storedLang = localStorage.getItem("appLanguage") || "en";
@@ -40,34 +29,43 @@ function App() {
       ".goog-te-combo"
     ) as HTMLSelectElement | null;
 
-    if (!select) return;
-
-    if (lang === currentLang) return;
+    if (!select || lang === currentLang) return;
 
     setLoading(true);
-
     select.value = "en";
     select.dispatchEvent(new Event("change"));
 
     setTimeout(() => {
       select.value = lang;
       select.dispatchEvent(new Event("change"));
-
       setCurrentLang(lang);
       localStorage.setItem("appLanguage", lang);
-
       setTimeout(() => setLoading(false), 800);
     }, 300);
+  };
+
+  const instruction = isAndroid
+    ? "On Android, use the browser menu and tap “Install app” / “Add to Home screen”."
+    : isIOS
+    ? "On iOS, open the Share menu and tap “Add to Home Screen”."
+    : "Look for “Install app” or “Add to Home screen” in your browser menu.";
+
+  const openInstalledApp = () => {
+    const appUrl = "https://pwa-demo-app.onrender.com/?source=pwa";
+
+    if (/Android/i.test(navigator.userAgent)) {
+      window.location.href = `intent://pwa-demo-app.onrender.com/?source=pwa#Intent;scheme=https;package=com.android.chrome;end`;
+    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      window.location.href = appUrl;
+    } else {
+      window.location.href = appUrl;
+    }
   };
 
   return (
     <div style={{ minHeight: "100vh" }}>
       <h1
-        style={{
-          fontSize: "1.8rem",
-          marginBottom: "0.5rem",
-          color: "#16a34a",
-        }}
+        style={{ fontSize: "1.8rem", marginBottom: "0.5rem", color: "#16a34a" }}
       >
         PWA Demo App
       </h1>
@@ -80,10 +78,7 @@ function App() {
         }}
       >
         <h1>Hello, welcome to my React app!</h1>
-        <p>
-          This is an example application where you can switch between English
-          and Hindi using Google Translate.
-        </p>
+        <p>Switch between English and Hindi using Google Translate.</p>
 
         <button
           onClick={() => translatePage("hi")}
@@ -118,10 +113,7 @@ function App() {
         <div
           style={{
             position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            inset: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -133,7 +125,7 @@ function App() {
         </div>
       )}
 
-      {showModal && showInstallModal && (
+      {shouldShowModal && (
         <div
           style={{
             position: "fixed",
@@ -161,13 +153,18 @@ function App() {
             }}
           >
             <h2 style={{ marginTop: 0, fontSize: "1.3rem", color: "#333" }}>
-              Install This App
+              {isInstalled ? "Open App" : "Install This App"}
             </h2>
+
             <p style={{ marginBottom: "1.2rem", color: "#333" }}>
-              {instruction}
+              {isInstalled
+                ? "App is already installed please use it."
+                : instruction}
             </p>
-            {isInstallable && (
+
+            {isInstalled ? (
               <button
+                onClick={openInstalledApp}
                 style={{
                   padding: "10px 20px",
                   fontSize: "1rem",
@@ -178,13 +175,29 @@ function App() {
                   color: "#fff",
                   width: "100%",
                 }}
-                onClick={() => {
-                  promptInstall();
-                  setShowModal(false);
-                }}
               >
-                Install App
+                Open App
               </button>
+            ) : (
+              isInstallable && (
+                <button
+                  onClick={() => {
+                    promptInstall();
+                  }}
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: "1rem",
+                    cursor: "pointer",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#16a34a",
+                    color: "#fff",
+                    width: "100%",
+                  }}
+                >
+                  Install App
+                </button>
+              )
             )}
           </div>
         </div>
