@@ -18,6 +18,12 @@
       "purpose": "any maskable"
     }
   ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+pwademo",
+      "url": "/?source=pwa&action=%s"
+    }
+  ],
   "categories": ["productivity", "utilities"],
   "lang": "en",
   "dir": "ltr",

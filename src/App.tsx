@@ -60,7 +60,10 @@ function App() {
     } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       window.location.href = appUrl;
     } else {
-      window.location.href = appUrl;
+      window.location.href = "web+pwademo://open";
+      setTimeout(() => {
+        window.location.href = appUrl;
+      }, 1500);
     }
   };
 
