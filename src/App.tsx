@@ -8,6 +8,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [currentLang, setCurrentLang] = useState("en");
 
+  console.log(setShowModal);
+
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
     (window.navigator as any).standalone === true;
