@@ -26,6 +26,33 @@ function App() {
     translatePage(storedLang);
   }, []);
 
+  useEffect(() => {
+    const hideGoogleTranslateUI = () => {
+      document.querySelectorAll("iframe.goog-te-banner-frame").forEach((el) => {
+        (el as HTMLElement).style.display = "none";
+      });
+
+      document.body.style.top = "0px";
+
+      document
+        .querySelectorAll(".goog-logo-link, .goog-te-gadget")
+        .forEach((el) => {
+          (el as HTMLElement).style.display = "none";
+        });
+
+      document.querySelectorAll("div[class^='VIpgJd']").forEach((el) => {
+        (el as HTMLElement).style.display = "none";
+      });
+    };
+
+    hideGoogleTranslateUI();
+
+    const observer = new MutationObserver(hideGoogleTranslateUI);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   const translatePage = (lang: string) => {
     const select = document.querySelector(
       ".goog-te-combo"
@@ -53,7 +80,7 @@ function App() {
     : "Look for “Install app” or “Add to Home screen” in your browser menu.";
 
   const openInstalledApp = () => {
-    const appUrl = "https://pwa-demo-app.onrender.com/?source=pwa";
+    const appUrl = "http://localhost:5173/?source=pwa";
 
     if (/Android/i.test(navigator.userAgent)) {
       window.location.href = `intent://pwa-demo-app.onrender.com/?source=pwa#Intent;scheme=https;package=com.android.chrome;end`;
