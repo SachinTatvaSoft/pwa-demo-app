@@ -80,7 +80,7 @@ function App() {
     : "Look for “Install app” or “Add to Home screen” in your browser menu.";
 
   const openInstalledApp = () => {
-    const appUrl = "http://localhost:5173/?source=pwa";
+    const appUrl = "https://pwa-demo-app.onrender.com/?source=pwa";
 
     if (/Android/i.test(navigator.userAgent)) {
       window.location.href = `intent://pwa-demo-app.onrender.com/?source=pwa#Intent;scheme=https;package=com.android.chrome;end`;
